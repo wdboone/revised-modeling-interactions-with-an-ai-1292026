@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modeling Interactions with an AI</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --user-color: #FFE6CC;
+            --if-color: #FFF4E6;
+            --ai-color: #D5E8F0;
+            --border-color: #e0e0e0;
+            --text-main: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8f9fa;
+            color: var(--text-main);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border-left: 8px solid #3498db;
+        }
+
+        h1 { margin: 0 0 10px 0; color: #2980b9; font-size: 24px; }
+        
+        .meta-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+            font-size: 0.95em;
+        }
+
+        .meta-item { display: flex; align-items: center; gap: 8px; }
+
+        .llm-badge {
+            background: #e8f4fd;
+            color: #1a73e8;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+            font-size: 0.85em;
+        }
+
+        /* Accordion Logic */
+        .interaction-tile {
+            margin-bottom: 15px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            border: 1px solid var(--border-color);
+        }
+
+        .prompt-header {
+            background-color: var(--user-color);
+            padding: 15px 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background 0.3s;
+            font-weight: 600;
+        }
+
+        .prompt-header:hover { background-color: #ffd8b1; }
+
+        .content-area {
+            display: none;
+            background: white;
+            padding: 0;
+        }
+
+        .content-area.active { display: block; }
+
+        .sub-tile {
+            padding: 15px 25px;
+            margin: 0;
+            border-bottom: 1px solid #eee;
+            position: relative;
+        }
+
+        .sub-tile i { margin-right: 10px; }
+
+        .if-box {
+            background-color: var(--if-color);
+            border-left: 4px dashed #f39c12;
+            font-style: italic;
+        }
+
+        .response-box {
+            background-color: var(--ai-color);
+            border-left: 4px solid #3498db;
+        }
+
+        .label {
+            display: block;
+            font-size: 0.75em;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 5px;
+            color: #7f8c8d;
+        }
+
+        .chevron { transition: transform 0.3s; }
+        .active .chevron { transform: rotate(180deg); }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            font-size: 0.8em;
+            color: #95a5a6;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1><i class="fas fa-project-diagram"></i> Modeling Interactions with an AI</h1>
+        <div class="meta-info">
+            <div class="meta-item"><i class="fas fa-user"></i> <strong>Student:</strong> Willie Boone</div>
+            <div class="meta-item"><i class="fas fa-chalkboard-teacher"></i> <strong>Professor:</strong> Dr. Nordstrom</div>
+            <div class="meta-item"><i class="fas fa-graduation-cap"></i> <strong>Course:</strong> AI Interfaces</div>
+            <div class="meta-item"><i class="fas fa-calendar-alt"></i> <strong>Date:</strong> Jan 29, 2026</div>
+        </div>
+        <div class="llm-badge">Created with Google Gemini</div>
+    </header>
+
+    <div id="app-content">
+        </div>
+
+    <footer>
+        Applied Artificial Intelligence Program Assignment | 32 Total Interaction Blocks
+    </footer>
+</div>
+
+<script>
+    const data = [
+        {
+            id: "A",
+            prompt: "What will it take for my ELL students to exit the ELD/ELL program?",
+            if1: "Does your district require additional criteria beyond Level 4 scores (such as specific GPA, standardized test scores, or teacher portfolios) for reclassification?",
+            response: "In Tennessee, students must achieve proficiency level 4 in all four domains (Listening, Speaking, Reading, Writing) on the ELPA21. Students need explicit academic language instruction and domain-specific interventions.",
+            if2: "Are you asking about a specific student who is close to exiting, or do you need general strategies?"
+        },
+        {
+            id: "B",
+            prompt: "Challenges in exiting if majority of students are between 2.5 and 3.1?",
+            if1: "Are these proficiency levels consistent across all four domains, or do students show particular weaknesses in specific areas?",
+            response: "Students are 1-2 levels away. Challenges include: uneven domain development (spiky profiles), academic language barriers, and a 2-3 year timeline to reach Level 4.",
+            if2: "Would you like specific intervention strategies for the domain where most students are struggling?"
+        },
+        {
+            id: "C",
+            prompt: "Resources and realistic goals for one teacher with 80 students?",
+            if1: "Do you have access to technology resources, or are you primarily working with traditional print materials?",
+            response: "Use Newsela, CommonLit, and Quizlet. Goals: (1) Focus on one lowest domain, (2) 3-4 tiered groups, (3) Partner with content teachers, (4) Target students at the 'cusp' (Level 3.5+).",
+            if2: "Are your content area teachers currently trained in sheltered instruction strategies?"
+        },
+        {
+            id: "D",
+            prompt: "Supporting students with only 45-minute sessions and high ratios?",
+            if1: "How many students do you typically have in each 45-minute class period?",
+            response: "Progress will be slow. Maximize time with routines. Lower-proficiency students may move 0.5 levels annually. Advocate for staff, as 1:80 is severely under-resourced.",
+            if2: "Has your administration been receptive to requests for additional ELL support in the past?"
+        },
+        {
+            id: "E",
+            prompt: "Low budget and low student motivation - what can be done?",
+            if1: "What do you believe are the primary reasons for low student motivation?",
+            response: "Use volunteers/interns and blended learning. Address motivation by building relationships and celebrating small wins. Control what you can; accept what you cannot.",
+            if2: "Would implementing a student interest survey help you better understand what topics engage them?"
+        },
+        {
+            id: "F",
+            prompt: "How do I balance work/home life with high paperwork demands?",
+            if1: "Are you currently experiencing signs of burnout (exhaustion, resentment)?",
+            response: "Batch tasks and set firm boundaries (no email after 6 PM). If balance is impossible, talk to admin or consider leaving. You are allowed to choose yourself.",
+            if2: "Do you have access to a union representative or employee assistance program?"
+        },
+        {
+            id: "G",
+            prompt: "Handling mandatory subbing and meetings during planning periods?",
+            if1: "How frequently are you being asked to substitute or attend meetings during instructional time?",
+            response: "Document every instance as this may be a contract violation. Triage priorities: Focus on safety/legal requirements first. Make it the administration's problem to solve.",
+            if2: "Does your teaching contract specify limits on substituting during planning periods?"
+        },
+        {
+            id: "H",
+            prompt: "Refusing school politics - is being a 'lone ranger' the best path?",
+            if1: "How long do you plan to stay in this position?",
+            response: "Lone rangering protects peace but causes isolation. It works short-term. Long-term, you need a 'middle ground' of collegial connections without the games.",
+            if2: "Have you experienced negative consequences from maintaining professional distance?"
+        }
+    ];
+
+    const appContainer = document.getElementById('app-content');
+
+    data.forEach(item => {
+        const tile = document.createElement('div');
+        tile.className = 'interaction-tile';
+        tile.innerHTML = `
+            <div class="prompt-header" onclick="toggleTile(this)">
+                <span><i class="fas fa-question-circle"></i> Prompt ${item.id}: ${item.prompt}</span>
+                <i class="fas fa-chevron-down chevron"></i>
+            </div>
+            <div class="content-area">
+                <div class="sub-tile if-box">
+                    <span class="label">Clarification Question (AI)</span>
+                    <i class="fas fa-comment-dots"></i> "${item.if1}"
+                </div>
+                <div class="sub-tile response-box">
+                    <span class="label">AI Response</span>
+                    <i class="fas fa-robot"></i> ${item.response}
+                </div>
+                <div class="sub-tile if-box">
+                    <span class="label">Follow-up / IF Question (AI)</span>
+                    <i class="fas fa-arrow-right"></i> "${item.if2}"
+                </div>
+            </div>
+        `;
+        appContainer.appendChild(tile);
+    });
+
+    function toggleTile(header) {
+        const content = header.nextElementSibling;
+        const allContent = document.querySelectorAll('.content-area');
+        const allHeaders = document.querySelectorAll('.prompt-header');
+        
+        content.classList.toggle('active');
+        header.classList.toggle('active');
+    }
+</script>
+
+</body>
+</html>
